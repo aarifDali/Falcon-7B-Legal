@@ -1,22 +1,27 @@
 from django.shortcuts import render
 from django.http import HttpResponse
-from langchain import PromptTemplate
-from langchain.chains import LLMChain
-from langchain.llms import HuggingFaceHub
+from langchain.prompts import PromptTemplate
+from langchain.chains.llm import LLMChain
+from langchain_community.llms import HuggingFaceHub
 from dotenv import load_dotenv
 import os
+import torch
+from transformers import AutoModel 
 
 # Create your views here.
 
 # os.environ['OPENAI_API_KEY'] = ''
-os.environ['HUGGINGFACEHUB_API_TOKEN'] = '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' 
+# os.environ['HUGGINGFACEHUB_API_TOKEN'] = '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' 
 
 # Import your model and template
 # load_dotenv()
-llm_hf = HuggingFaceHub(
-    repo_id="tiiuae/falcon-7b-instruct",
-    model_kwargs={"temperature": 0.3}
-)
+# llm_hf = HuggingFaceHub(
+#     repo_id="tiiuae/falcon-7b-instruct",
+#     model_kwargs={"temperature": 0.3}
+# )
+
+model_name = 'tiiuae/falcon-7b-instruct'
+model = AutoModel.from_pretrained(model_name)
 
 
 restaurant_template = """
@@ -50,7 +55,8 @@ def getResponse(request):
             )
         
         # Create an LLMChain
-        chain = LLMChain(llm=llm_hf, prompt=prompt)
+        chain = LLMChain(llm=model, prompt=prompt)
+
 
         # Generate a response
         response = chain.run(userMessage)
