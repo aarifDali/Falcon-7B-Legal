@@ -5,8 +5,25 @@ from langchain_community.llms import HuggingFaceHub
 from dotenv import load_dotenv
 import os
 import torch
-from transformers import AutoModel
+# from transformers import AutoModel
 from langchain_core.prompts import PromptTemplate
+
+from langchain_community.llms.huggingface_pipeline import HuggingFacePipeline
+import torch
+from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline, AutoModelForSeq2SeqLM
+
+model_id = "gpt2-medium"
+tokenizer = AutoTokenizer.from_pretrained(model_id)
+model = AutoModelForCausalLM.from_pretrained(model_id)
+
+pipe = pipeline(
+    "text-generation", 
+    model=model, 
+    tokenizer=tokenizer, 
+    max_length=100
+)
+
+local_llm = HuggingFacePipeline(pipeline=pipe)
 
 
 # os.environ['OPENAI_API_KEY'] = ''
@@ -19,8 +36,8 @@ from langchain_core.prompts import PromptTemplate
 #     model_kwargs={"temperature": 0.3}
 # )
 
-model_name = 'tiiuae/falcon-7b-instruct'
-model = AutoModel.from_pretrained(model_name)
+# model_name = 'tiiuae/falcon-7b-instruct'
+# model = AutoModel.from_pretrained(model_name)
  
 
 restaurant_template = """
@@ -57,7 +74,7 @@ def main():
             )
             
             # Create an LLMChain
-            chain = LLMChain(llm=model, prompt=prompt)
+            chain = LLMChain(llm=local_llm, prompt=prompt)
             
             # Generate a response
             response = chain.run(description)

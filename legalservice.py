@@ -1,11 +1,9 @@
-from django.shortcuts import render
-from django.http import HttpResponse
+import streamlit as st
 from langchain.prompts import PromptTemplate
 from langchain.chains.llm import LLMChain
+from langchain_community.llms import HuggingFaceHub
 import os
 import torch
-
-
 
 from langchain_community.llms.huggingface_pipeline import HuggingFacePipeline
 import torch
@@ -42,25 +40,34 @@ here's the example issue:
 {issue}
 """
 
+# Define the Streamlit app
+def main():
 
-def main(request):
-    return render(request, 'index.html')
 
-
-def getResponse(request):
-    userMessage = request.GET.get('userMessage')
+    st.title("Indian Legal Consultation")
     
-    if userMessage:
-        prompt = PromptTemplate(
+    # Input for the user's issue
+    description = st.text_area("Please describe your issue:")
+
+    if st.button("Get Legal Advice"):
+        if description:
+            # Create a PromptTemplate
+            prompt = PromptTemplate(
                 input_variables=["issue"],
                 template=restaurant_template,
             )
-        
-        # Create an LLMChain
-        chain = LLMChain(llm=local_llm, prompt=prompt)
+            
+            # Create an LLMChain
+            chain = LLMChain(llm=local_llm, prompt=prompt)
+            
+            # Generate a response
+            response = chain.run(description)
+            
+            # Display the response
+            st.subheader("Legal Advice:")
+            st.write(response)
+        else:
+            st.warning("Please provide a description of your issue.")
 
-
-        # Generate a response
-        response = chain.run(userMessage)
-
-    return HttpResponse(response)
+if __name__ == "__main__":
+    main()
