@@ -2,16 +2,13 @@ import streamlit as st
 # from langchain.prompts import PromptTemplate
 from langchain.chains.llm import LLMChain
 from langchain_community.llms import HuggingFaceHub
-from dotenv import load_dotenv
 import os
-import torch
 # from transformers import AutoModel
 from langchain_core.prompts import PromptTemplate
 
 from langchain_community.llms.huggingface_pipeline import HuggingFacePipeline
-import torch
 from transformers import AutoTokenizer, AutoModelForCausalLM, pipeline, AutoModelForSeq2SeqLM
-
+ 
 model_id = "gpt2-medium"
 tokenizer = AutoTokenizer.from_pretrained(model_id)
 model = AutoModelForCausalLM.from_pretrained(model_id)

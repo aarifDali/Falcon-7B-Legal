@@ -53,7 +53,7 @@ Before running the app, make sure you have Python installed on your system. You 
 6. Run the Streamlit app:
 
    ```bash
-   streamlit run app.py
+   streamlit run start.py
    ```
 
 7. Open a web browser and navigate to [http://localhost:8501](http://localhost:8501) to use the app.
